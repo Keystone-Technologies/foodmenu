@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+use Mojolicious::Lite;
+
+use Date::Simple::D8;
+
+
+helper db => sub {
+  {
+    '*' => [
+      'Eggs of choice<br />Sausage / Bacon<br />White / Wheat Toast<br />Fresh Fruit<br />Danish<br />Assorted Hot / Cold Cereal<br />Drink of Choice',
+      'Sweet & Salty Bars<br />Drink of Choice',
+      'Soup De Jour<br />Chicken Salad Croissant<br />Cheeseburger on Bun<br />Potato Chips<br />Peas & Carrots / Toss Salad<br />Mixed Fruit<br />Chocolate Cake<br />Drink of Choice',
+      'Cookies<br />Drink of Choice',
+      'Soup De Jour<br />Homemade Lasagna<br />Baked Chicken<br />Broccoli<br />Toss Salad<br />Bread Sticks<br />Ice Cream<br />Drink of Choice',
+      'Popcorn<br />Drink of Choice',
+    ],
+  }
+};
+helper 'model.daily' => sub { shift->db; };
+
+get '/:date' => sub {
+  my $c = shift;
+  my $date = Date::Simple::D8->new($c->param('date'));
+  $c->render(json => $c->model->daily->{$date} || $c->model->daily->{'*'});
+};
+
+app->start;
